@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — aidaid.lol</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#e7b8ff">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Cpath d='M15 22l11 10-11 10' fill='none' stroke='%23e7b8ff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M31 44h18' stroke='%23f2f2f2' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  :root{--bg:#000;--fg:#f2f2f2;--muted:#8c8c8c;--dim:#4d4d4d;--line:#1f1f1f;--star:#e7b8ff;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);font-family:var(--mono)}
+  body{min-height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:24px}
+  ::selection{background:var(--star);color:#000}
+  #sky{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+  .meteor{position:absolute;width:40px;height:3px;border-radius:3px;will-change:translate,opacity;
+    background:linear-gradient(90deg,transparent,var(--star));box-shadow:0 0 8px var(--star),0 0 2px #fff;
+    transform:rotate(30deg);opacity:0;animation:fall linear infinite}
+  .meteor::after{content:"";position:absolute;right:-1px;top:-1px;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 6px #fff}
+  @keyframes fall{0%{opacity:0;translate:0 0}10%{opacity:.9}80%{opacity:.9}100%{opacity:0;translate:340px 196px}}
+  main{position:relative;width:100%;max-width:680px}
+  .t{font-size:14px;color:var(--muted);line-height:1.8;padding:0 4px 18px;border-bottom:1px solid var(--line);word-break:break-all}
+  .t .a{color:var(--star)} .t .e{color:#ff6b6b}
+  h1{font-size:clamp(96px,22vw,180px);font-weight:700;letter-spacing:-.03em;line-height:1;margin-top:40px}
+  h1 span{color:var(--dim)}
+  p{color:var(--muted);font-size:16px;margin-top:12px}
+  a.home{display:inline-block;margin-top:36px;color:var(--fg);text-decoration:none;font-size:16px;
+    border:1px solid var(--line);border-radius:8px;padding:12px 18px;transition:border-color .2s,color .2s}
+  a.home:hover{border-color:var(--star);color:var(--star)}
+  .caret{display:inline-block;width:.6em;height:1.1em;vertical-align:-.2em;background:var(--muted);animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){.meteor{display:none}}
+</style>
+</head>
+<body>
+<div id="sky" aria-hidden="true"></div>
+<main>
+  <div class="t">
+    <div><span class="a">guest@aidaid:~$</span> cd <span id="p">/somewhere</span></div>
+    <div class="e">bash: cd: <span id="p2">/somewhere</span>: No such file or directory</div>
+    <div><span class="a">guest@aidaid:~$</span> <span class="caret"></span></div>
+  </div>
+  <h1>404<span>.</span></h1>
+  <p>this page doesn't exist. skill issue (mine, probably).</p>
+  <a class="home" href="/">cd ~ &nbsp;→ back home</a>
+</main>
+<script>
+  const path = decodeURIComponent(location.pathname || '/').slice(0, 80) || '/';
+  document.getElementById('p').textContent = path;
+  document.getElementById('p2').textContent = path;
+  try{
+    const t = localStorage.getItem('aidaid-theme');
+    const T = { pink:'#e7b8ff', hot:'#ff4fd8', green:'#7dff9a', blue:'#7cc4ff', orange:'#ffb36b', red:'#ff6b6b', yellow:'#ffe66b', white:'#ffffff' };
+    if (T[t]) document.documentElement.style.setProperty('--star', T[t]);
+  }catch(e){}
+  const sky = document.getElementById('sky');
+  for (let i=0;i<14;i++){
+    const m=document.createElement('span'); m.className='meteor';
+    m.style.left=(Math.random()*110-15)+'vw'; m.style.top=(Math.random()*100-10)+'vh';
+    m.style.animationDuration=(5+Math.random()*7)+'s'; m.style.animationDelay=(-Math.random()*12)+'s';
+    sky.appendChild(m);
+  }
+  document.addEventListener('keydown', e=>{ if (e.key==='Enter' || e.key==='Escape') location.href='/'; });
+</script>
+</body>
+</html>
