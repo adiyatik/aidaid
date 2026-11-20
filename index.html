@@ -179,7 +179,7 @@
 <main id="page">
   <div class="term">
     <div><span id="l1"></span><br><span id="l2"></span><span class="caret" id="caret"></span></div>
-    <div class="r">loc: usa<br>time: <span id="clock">--:--</span><br>visitor: <span id="visits">#----</span><br>here rn: <span id="here">1</span></div>
+    <div class="r">loc: ny, usa<br>time: <span id="clock">--:--</span><br>visitor: <span id="visits">#----</span><br>here rn: <span id="here">1</span></div>
   </div>
 
   <div class="status reveal" id="status">
@@ -209,7 +209,7 @@
     <table>
       <thead><tr><th>ID</th><th>VALUE</th><th>WHAT</th></tr></thead>
       <tbody>
-        <tr><td class="id">0x00</td><td class="v">driftwall</td><td class="p">mac wallpapers</td></tr>
+        <tr class="link"><td class="id">0x00</td><td class="v"><a href="https://github.com/adiyatik/driftwall" target="_blank" rel="noopener">driftwall</a></td><td class="p">mac wallpapers ↗</td></tr>
         <tr><td class="id">0x01</td><td class="v">keepspun</td><td class="p">daily journal</td></tr>
         <tr><td class="id">0x02</td><td class="v">grip</td><td class="p">pvp server</td></tr>
       </tbody>
@@ -604,7 +604,7 @@ const CMDS = {
     '<span class="d">try a few others too ;)</span>'].join('\n'); },
   whoami(){ return 'adi. im shit at coding, but yeah lol.\nbuilds random stuff at 4am.'; },
   socials(){ return '  <span class="a">email     </span> ' + EMAIL + '\n' + Object.entries(LINKS).map(([k,v])=>'  <span class="a">'+k.padEnd(10)+'</span> <a href="'+v+'" target="_blank" rel="noopener">'+esc(v.replace('https://',''))+'</a>').join('\n'); },
-  projects(){ return '  <span class="a">driftwall</span>   mac wallpapers\n  <span class="a">keepspun</span>    daily journal\n  <span class="a">grip</span>        pvp server'; },
+  projects(){ return '  <a href="https://github.com/adiyatik/driftwall" target="_blank" rel="noopener">driftwall</a>   mac wallpapers <span class="d">(github)</span>\n  <span class="a">keepspun</span>    daily journal\n  <span class="a">grip</span>        pvp server'; },
   status(){
     if (!presence) return '<span class="d">couldn\'t reach discord rn</span>';
     const s=presence.discord_status; const g=(presence.activities||[]).find(a=>a.type===0);
