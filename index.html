@@ -38,7 +38,8 @@
 
   /* shooting stars */
   #sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-  .meteor{position:absolute;width:40px;height:3px;border-radius:3px;
+  body.shell-open .meteor{animation-play-state:paused}
+  .meteor{position:absolute;width:40px;height:3px;border-radius:3px;will-change:translate,opacity;
     background:linear-gradient(90deg,transparent,var(--star));
     box-shadow:0 0 8px var(--star),0 0 2px #fff;
     transform:rotate(30deg);opacity:0;animation:fall linear infinite}
@@ -128,7 +129,7 @@
   .toast.on{opacity:1;translate:-50% 0}
 
   /* fake terminal */
-  #shell{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  #shell{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.82);
     display:flex;align-items:flex-end;justify-content:center;padding:24px}
   @media (min-width:720px){#shell{align-items:center}}
   .win{width:100%;max-width:720px;height:min(460px,70vh);background:#070707;border:1px solid #262626;
@@ -150,8 +151,9 @@
   /* custom cursor + sparkles */
   #fx{position:fixed;inset:0;pointer-events:none;z-index:50}
   #cur{position:fixed;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;pointer-events:none;z-index:51;
-    transition:width .15s,height .15s,margin .15s,opacity .2s;filter:drop-shadow(0 0 6px var(--star));opacity:0}
-  #cur svg{width:100%;height:100%;animation:spin 6s linear infinite}
+    transition:width .15s,height .15s,margin .15s,opacity .2s;opacity:0;will-change:transform;
+    background:radial-gradient(circle,rgba(231,184,255,.45) 0,rgba(231,184,255,0) 65%);border-radius:50%}
+  #cur svg{width:100%;height:100%;animation:spin 6s linear infinite;will-change:transform}
   #cur.big{width:34px;height:34px;margin:-17px 0 0 -17px}
   #cur.down svg{transform:scale(.7)}
   @keyframes spin{to{rotate:360deg}}
@@ -410,6 +412,7 @@ function spawnStars(n){
   }
 }
 spawnStars(18);
+document.addEventListener('visibilitychange',()=>document.body.classList.toggle('shell-open', document.hidden || !shell.hidden));
 
 /* ---------- view counter (abacus) ---------- */
 (async ()=>{
@@ -451,8 +454,10 @@ spawnStars(18);
   function size(){ W = innerWidth; H = innerHeight; fx.width = W*dpr; fx.height = H*dpr; g.setTransform(dpr,0,0,dpr,0,0); }
   size(); addEventListener('resize', size);
   const parts = [];
-  const starCol = () => getComputedStyle(document.body).getPropertyValue('--star').trim() || '#e7b8ff';
-  function add(x, y, vx, vy, life, r){ parts.push({x,y,vx,vy,life,max:life,r}); }
+  let col = '#e7b8ff', running = false;
+  window.refreshStarCol = () => { col = getComputedStyle(document.body).getPropertyValue('--star').trim() || '#e7b8ff'; };
+  refreshStarCol();
+  function add(x, y, vx, vy, life, r){ parts.push({x,y,vx,vy,life,max:life,r}); if (!running){ running = true; requestAnimationFrame(loop); } }
   if (fine){
     document.documentElement.classList.add('cc');
     let lx = 0, ly = 0;
@@ -478,26 +483,24 @@ spawnStars(18);
     }
   });
   function sparkle(x, y, r, a, col){
-    g.globalAlpha = a; g.fillStyle = col; g.shadowColor = col; g.shadowBlur = 8;
+    g.globalAlpha = a; g.fillStyle = col;
     g.beginPath();
     g.moveTo(x, y-r*2.2); g.quadraticCurveTo(x, y, x+r*2.2, y); g.quadraticCurveTo(x, y, x, y+r*2.2);
     g.quadraticCurveTo(x, y, x-r*2.2, y); g.quadraticCurveTo(x, y, x, y-r*2.2); g.fill();
   }
-  (function loop(){
+  function loop(){
     g.clearRect(0,0,W,H);
-    if (parts.length){
-      const col = starCol();
-      for (let i = parts.length-1; i >= 0; i--){
-        const p = parts[i];
-        p.x += p.vx; p.y += p.vy; p.vx *= .94; p.vy = p.vy*.94 + .04; p.life--;
-        if (p.life <= 0){ parts.splice(i,1); continue; }
-        const k = p.life/p.max;
-        sparkle(p.x, p.y, p.r*k + .3, k, i % 3 ? col : '#fff');
-      }
-      g.globalAlpha = 1; g.shadowBlur = 0;
+    for (let i = parts.length-1; i >= 0; i--){
+      const p = parts[i];
+      p.x += p.vx; p.y += p.vy; p.vx *= .94; p.vy = p.vy*.94 + .04; p.life--;
+      if (p.life <= 0){ parts.splice(i,1); continue; }
+      const k = p.life/p.max;
+      sparkle(p.x, p.y, p.r*k + .3, k, i % 3 ? col : '#fff');
     }
-    requestAnimationFrame(loop);
-  })();
+    g.globalAlpha = 1;
+    if (parts.length > 220) parts.splice(0, parts.length - 220);
+    if (parts.length) requestAnimationFrame(loop); else { running = false; g.clearRect(0,0,W,H); }
+  }
 })();
 
 
@@ -512,12 +515,12 @@ const hist=[]; let hi=0, booted=false;
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function print(html){ out.insertAdjacentHTML('beforeend', html + '\n'); out.scrollTop = out.scrollHeight; }
 function openShell(){
-  shell.hidden=false; input.focus();
+  shell.hidden=false; document.body.classList.add('shell-open'); input.focus();
   if (!booted){ booted=true;
     print('<span class="a">aidaid.lol</span> <span class="d">shell v0.1 — type</span> <span class="a">help</span> <span class="d">to see commands</span>');
   }
 }
-function closeShell(){ if (snakeOn) return; shell.hidden=true; }
+function closeShell(){ if (snakeOn) return; shell.hidden=true; document.body.classList.remove('shell-open'); }
 document.getElementById('open-shell').onclick=openShell;
 document.getElementById('close-shell').onclick=closeShell;
 shell.addEventListener('click',e=>{ if(e.target===shell) closeShell(); });
@@ -611,7 +614,10 @@ CMDS.snake = function(){
   const C = 18, cols = Math.max(12, Math.floor(box.width / C)), rows = Math.max(10, Math.floor(box.height / C));
   cv.width = cols * C; cv.height = rows * C;
   const x = cv.getContext('2d');
-  const col = () => getComputedStyle(document.body).getPropertyValue('--star').trim() || '#e7b8ff';
+  const _c = getComputedStyle(document.body).getPropertyValue('--star').trim() || '#e7b8ff', _f = getComputedStyle(document.body).fontFamily;
+  const col = () => _c;
+  const grid = document.createElement('canvas'); grid.width = cv.width; grid.height = cv.height;
+  { const gx = grid.getContext('2d'); gx.fillStyle = '#111'; for (let i=0;i<cols;i++) for (let j=0;j<rows;j++) gx.fillRect(i*C+C/2-1, j*C+C/2-1, 2, 2); }
   let best = 0; try{ best = +localStorage.getItem('aidaid-snake') || 0; }catch(e){}
   let s, dir, next, food, score, dead, timer;
   function place(){ do{ food = [Math.floor(Math.random()*cols), Math.floor(Math.random()*rows)]; } while (s.some(p=>p[0]===food[0]&&p[1]===food[1])); }
@@ -634,20 +640,20 @@ CMDS.snake = function(){
   }
   function draw(){
     x.fillStyle = '#070707'; x.fillRect(0,0,cv.width,cv.height);
-    x.fillStyle = '#111'; for (let i=0;i<cols;i++) for (let j=0;j<rows;j++) x.fillRect(i*C+C/2-1, j*C+C/2-1, 2, 2);
+    x.drawImage(grid, 0, 0);
     const c = col();
     x.shadowColor = '#fff'; x.shadowBlur = 10; x.fillStyle = '#fff';
     x.beginPath(); x.arc(food[0]*C+C/2, food[1]*C+C/2, C/3, 0, 7); x.fill();
     x.shadowColor = c; x.shadowBlur = 12;
     s.forEach((p,i)=>{ x.globalAlpha = 1 - i/(s.length*1.6); x.fillStyle = c; x.fillRect(p[0]*C+2, p[1]*C+2, C-4, C-4); });
     x.globalAlpha = 1; x.shadowBlur = 0;
-    x.font = '13px ' + getComputedStyle(document.body).fontFamily; x.fillStyle = '#8c8c8c';
+    x.font = '13px ' + _f; x.fillStyle = '#8c8c8c';
     x.fillText('score ' + score + '   best ' + best + '   [q] quit', 10, 18);
     if (dead){
       x.fillStyle = 'rgba(0,0,0,.6)'; x.fillRect(0,0,cv.width,cv.height);
-      x.textAlign = 'center'; x.fillStyle = c; x.font = 'bold 28px ' + getComputedStyle(document.body).fontFamily;
+      x.textAlign = 'center'; x.fillStyle = c; x.font = 'bold 28px ' + _f;
       x.fillText('skill issue', cv.width/2, cv.height/2 - 8);
-      x.fillStyle = '#8c8c8c'; x.font = '14px ' + getComputedStyle(document.body).fontFamily;
+      x.fillStyle = '#8c8c8c'; x.font = '14px ' + _f;
       x.fillText('score ' + score + '  ·  space to retry  ·  q to quit', cv.width/2, cv.height/2 + 22);
       x.textAlign = 'left';
     }
@@ -691,7 +697,7 @@ document.addEventListener('keydown', e=>{
   if (kpos === KONAMI.length){
     kpos = 0;
     const on = document.body.classList.toggle('pink');
-    party = on; sky.innerHTML = ''; spawnStars(on ? 90 : 18);
+    party = on; sky.innerHTML = ''; spawnStars(on ? 60 : 18); window.refreshStarCol && refreshStarCol();
     toast(on ? '★ konami unlocked ★' : 'back to normal');
   }
 });
