@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adi — aidaid.lol</title>
+<meta name="description" content="Adi.">
+<meta name="theme-color" content="#000000">
+<style>
+  :root{
+    --bg:#000; --fg:#f2f2f2; --muted:#8c8c8c; --dim:#4d4d4d; --line:#1f1f1f;
+    --star:#e7b8ff;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);font-family:var(--mono)}
+  body{min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--star);color:#000}
+
+  /* shooting stars */
+  #sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .meteor{position:absolute;width:28px;height:3px;border-radius:3px;
+    background:linear-gradient(90deg,transparent,var(--star));
+    box-shadow:0 0 8px var(--star),0 0 2px #fff;
+    transform:rotate(30deg);opacity:0;
+    animation:fall linear infinite}
+  .meteor::after{content:"";position:absolute;right:-1px;top:-1px;width:5px;height:5px;
+    border-radius:50%;background:#fff;box-shadow:0 0 6px #fff}
+  @keyframes fall{
+    0%{opacity:0;translate:0 0}
+    10%{opacity:.9}
+    80%{opacity:.9}
+    100%{opacity:0;translate:340px 196px}
+  }
+
+  main{position:relative;z-index:1;max-width:400px;margin:0 auto;padding:16px 0 64px}
+  @media (max-width:440px){main{padding-left:16px;padding-right:16px}}
+
+  .term{display:flex;justify-content:space-between;font-size:10px;line-height:1.7;
+    color:var(--muted);padding:0 12px 14px;border-bottom:1px solid var(--line)}
+  .term .r{text-align:right}
+  nav{font-size:10px;color:var(--muted);padding:14px 12px}
+  nav a{color:inherit;text-decoration:none;margin-right:6px}
+  nav a:hover{color:var(--fg)}
+
+  .hero{margin-top:56px}
+  h1{font-size:64px;font-weight:700;letter-spacing:-.02em;line-height:1}
+  .bio{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.6;max-width:36ch}
+  .bio b{color:var(--fg);font-weight:500}
+
+  h2{font-size:22px;font-weight:700;margin:44px 0 10px}
+  table{width:100%;border-collapse:collapse}
+  th{font-size:9px;font-weight:400;color:var(--dim);text-align:left;
+     letter-spacing:.06em;padding:14px 12px;border-bottom:1px solid var(--line)}
+  td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th:last-child,td:last-child{text-align:right}
+  td.id{font-size:10px;color:var(--dim);width:58px}
+  td.v{font-size:18px}
+  td.p{font-size:10px;color:var(--muted)}
+  tr.link{cursor:pointer}
+  tr.link td.v a{color:inherit;text-decoration:none}
+  tr.link:hover td.v,tr.link:hover td.p{color:var(--star)}
+  tr.link:hover td.id{color:var(--muted)}
+
+  footer{margin-top:44px;display:flex;justify-content:space-between;
+    font-size:10px;color:var(--dim);padding:0 12px}
+  footer button{background:none;border:0;color:inherit;font:inherit;cursor:pointer}
+  footer button:hover{color:var(--star)}
+  @media (prefers-reduced-motion:reduce){.meteor{display:none}}
+</style>
+</head>
+<body>
+<div id="sky" aria-hidden="true"></div>
+
+<main>
+  <div class="term">
+    <div>$ curl aidaid.lol<br>#!/usr/bin/env adi</div>
+    <div class="r">loc: ny, usa<br>time: <span id="clock">--:--</span></div>
+  </div>
+  <nav><a href="#">Home</a></nav>
+
+  <section class="hero">
+    <h1>adi</h1>
+    <p class="bio">im shit at coding, but yeah <b>lol</b>. wanted to build smth interesting and simple so here it is, <b>all my socials below</b>.</p>
+  </section>
+
+  <h2>making</h2>
+  <table>
+    <thead><tr><th>ID</th><th>VALUE</th><th>WHAT</th></tr></thead>
+    <tbody>
+      <tr><td class="id">0x00</td><td class="v">driftwall</td><td class="p">mac wallpapers</td></tr>
+      <tr><td class="id">0x01</td><td class="v">keepspun</td><td class="p">daily journal</td></tr>
+      <tr><td class="id">0x02</td><td class="v">grip</td><td class="p">pvp server</td></tr>
+    </tbody>
+  </table>
+
+  <h2>find me</h2>
+  <table>
+    <thead><tr><th>ID</th><th>VALUE</th><th>HANDLE</th></tr></thead>
+    <tbody>
+      <tr class="link" data-href="https://discord.com/users/1486589944217604227"><td class="id">0x00</td><td class="v"><a href="https://discord.com/users/1486589944217604227" target="_blank" rel="noopener">discord</a></td><td class="p">add me ↗</td></tr>
+      <tr class="link" data-href="https://www.instagram.com/adiyatnz"><td class="id">0x01</td><td class="v"><a href="https://www.instagram.com/adiyatnz" target="_blank" rel="noopener">instagram</a></td><td class="p">@adiyatnz ↗</td></tr>
+      <tr class="link" data-href="https://www.tiktok.com/@4diy4t"><td class="id">0x02</td><td class="v"><a href="https://www.tiktok.com/@4diy4t" target="_blank" rel="noopener">tiktok</a></td><td class="p">@4diy4t ↗</td></tr>
+      <tr class="link" data-href="https://namemc.com/profile/knqr.5"><td class="id">0x03</td><td class="v"><a href="https://namemc.com/profile/knqr.5" target="_blank" rel="noopener">namemc</a></td><td class="p">knqr ↗</td></tr>
+    </tbody>
+  </table>
+
+  <footer>
+    <span>aidaid.lol</span>
+    <button id="lol" type="button">lol</button>
+  </footer>
+</main>
+
+<script>
+  // clock
+  const clock=document.getElementById('clock');
+  function tick(){try{clock.textContent=new Date().toLocaleTimeString('en-US',
+    {timeZone:'America/New_York',hour:'2-digit',minute:'2-digit',hour12:false})+' et';}catch(e){}}
+  tick(); setInterval(tick,15000);
+
+  // whole row clickable
+  document.querySelectorAll('tr.link').forEach(r=>r.addEventListener('click',e=>{
+    if(e.target.closest('a'))return; r.querySelector('a').click();
+  }));
+
+  // shooting stars
+  const sky=document.getElementById('sky');
+  for(let i=0;i<18;i++){
+    const m=document.createElement('span'); m.className='meteor';
+    m.style.left=(Math.random()*110-15)+'vw';
+    m.style.top=(Math.random()*100-10)+'vh';
+    m.style.animationDuration=(5+Math.random()*7)+'s';
+    m.style.animationDelay=(-Math.random()*12)+'s';
+    sky.appendChild(m);
+  }
+
+  // .lol easter egg
+  const faces=['lol','(¬‿¬)','ʕ•ᴥ•ʔ','(ᵔᴥᵔ)','¯\\_(ツ)_/¯'];
+  let i=0; const b=document.getElementById('lol');
+  b.addEventListener('click',()=>{i=(i+1)%faces.length;b.textContent=faces[i];});
+</script>
+</body>
+</html>
